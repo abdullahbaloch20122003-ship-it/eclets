@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { supabase } from "../lib/supabase";
 
 type Product = {
@@ -24,12 +23,14 @@ type Product = {
 const categories = ["All", "Shirts", "Trousers", "Outerwear"];
 
 export default function ShopPage() {
-  const searchParams = useSearchParams();
-
-  const categoryFromUrl = searchParams.get("category") || "All";
-
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categoryFromUrl, setCategoryFromUrl] = useState("All");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setCategoryFromUrl(params.get("category") || "All");
+  }, []);
 
   useEffect(() => {
     async function loadProducts() {
